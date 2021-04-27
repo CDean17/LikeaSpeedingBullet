@@ -25,6 +25,10 @@ public class WeaponScript : MonoBehaviour
     public float yRecoil = 10f;
     public float recoveryTime = 0.2f;
 
+    //Gameobjects to store
+    public GameObject projectile;
+    public GameObject bulletSpawn;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -56,6 +60,9 @@ public class WeaponScript : MonoBehaviour
             gunVisualT.localRotation = Quaternion.Euler(new Vector3(xRecoil, yRecoil, 0));
 
             nextFire = Time.time + fireDelay;
+
+            //Create projectile
+            Instantiate(projectile, bulletSpawn.transform.position, bulletSpawn.transform.rotation);
         }
 
         gunVisualT.localPosition = Vector3.SmoothDamp(gunVisualT.localPosition, Vector3.zero, ref posVel, recoveryTime);

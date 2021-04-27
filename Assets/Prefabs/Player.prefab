@@ -14,9 +14,10 @@ GameObject:
   - component: {fileID: 2092760305975346754}
   - component: {fileID: 2092760305975346758}
   - component: {fileID: 2092760305975346759}
+  - component: {fileID: 1890836248}
   m_Layer: 0
   m_Name: Player
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -52,7 +53,7 @@ MeshRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2092760305975346753}
-  m_Enabled: 0
+  m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
@@ -115,6 +116,7 @@ MonoBehaviour:
   horizontalSens: 1
   verticalSens: 1
   cam: {fileID: 2092760306622450888}
+  defaultPlayerScale: 1.3
   groundMoveSpeed: 10
   crouchMoveSpeed: 5
   airMoveSpeed: 100
@@ -124,7 +126,7 @@ MonoBehaviour:
   slideBoost: 10
   slideCooldown: 3
   crouchThreshhold: 4
-  groundedCheckDistance: 1.1
+  groundedCheckDistance: 1.6
   aboveObjCheckDistance: 1.5
   crouching: 0
   sliding: 0
@@ -145,10 +147,10 @@ MonoBehaviour:
   autoClamberTime: 0.5
   autoSquishFactor: 0.5
   clamberTimeMod: 1
-  clamberSpeed: 20
-  clamberForwardSpeed: 10
+  clamberSpeed: 40
+  clamberForwardSpeed: 25
   clamberCrestSpeed: 1000
-  clamberDetectionRange: 0.6
+  clamberDetectionRange: 0.8
   autoClamberDetectionRange: 1.3
   clamberStartTime: 0
   clamberTime: 0.5
@@ -168,6 +170,18 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 112
   m_CollisionDetection: 0
+--- !u!114 &1890836248
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2092760305975346753}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e66465aa8cd84841b4e45ac86d05238, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2092760306622450888
 GameObject:
   m_ObjectHideFlags: 0

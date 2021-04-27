@@ -119,7 +119,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8093975014573808965}
-  m_LocalRotation: {x: -0, y: -0, z: 0.13052616, w: 0.9914449}
+  m_LocalRotation: {x: 0, y: 0, z: 0.13052616, w: 0.9914449}
   m_LocalPosition: {x: 0.46, y: 2.471, z: 0.269}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -143,13 +143,15 @@ MonoBehaviour:
   gunVisualT: {fileID: 8093975014625573315}
   playerOffset: {x: 0.46, y: 0.471, z: 0.269}
   targetRot: {x: 0, y: 0, z: 0}
-  smoothTime: 0.3
+  smoothTime: 1
   posSmoothTime: 0.1
   fireDelay: 0.2
   zRecoil: 0.1
   xRecoil: -10
   yRecoil: 2
   recoveryTime: 0.2
+  projectile: {fileID: 8587239583991079490, guid: 65d43d129588ea44880ff103a999006e, type: 3}
+  bulletSpawn: {fileID: 8458081481028440781}
 --- !u!1 &8093975014625573312
 GameObject:
   m_ObjectHideFlags: 0
