@@ -110,20 +110,19 @@ public class FPSPlayerController : MonoBehaviour
             canJump = false;
         }
 
-
+        //Jumpnow if hit space and canJump is true (aka on ground)
         if (Input.GetKeyDown(KeyCode.Space) && canJump == true)
         {
             jumpNow = true;
         }
-
+        //Jump off of wallrunning walls if it space
         if (Input.GetKeyDown(KeyCode.Space) && isWallRunning)
         {
             jumpNow = true;
 
         }
 
-
-
+        //Initialize sliding and crouching
         if (Input.GetKeyDown(KeyCode.LeftControl))
         {
             sliding = true;
@@ -132,7 +131,7 @@ public class FPSPlayerController : MonoBehaviour
             transform.position = transform.position - new Vector3(0f, 0.2f, 0f);
             
         }
-
+        //Make sure the player stays crouched if they hold ctrl. If there is an object above the player make sure they are not allowed to uncrouch.
         if (Input.GetKey(KeyCode.LeftControl))
         {
             crouching = true;
@@ -158,6 +157,7 @@ public class FPSPlayerController : MonoBehaviour
 
         }
 
+        //Set scale for the player dependent of if they are crouching or clambering
         if(crouching == true)
         {
             transform.localScale = new Vector3(1, 0.7f, 1);
@@ -181,6 +181,7 @@ public class FPSPlayerController : MonoBehaviour
         isWallRight = Physics.Raycast(transform.position, transform.right, 1f);
         isWallLeft = Physics.Raycast(transform.position, -transform.right, 1f);
 
+        //Enable the wallrun if a wall is detected and we are allowed to wall run
         if((isWallRight || isWallLeft) && Input.GetAxis("Vertical") > 0 && enableWallRun)
         {
             isWallRunning = true;
@@ -191,6 +192,8 @@ public class FPSPlayerController : MonoBehaviour
             
         }
 
+
+        //Only enable the ability to wallRun after we have left the wall and come back
         if (!(isWallRight || isWallLeft))
             enableWallRun = true;
 
@@ -218,16 +221,18 @@ public class FPSPlayerController : MonoBehaviour
             //clamberEndTime = Time.time + clamberActivatedTime;
             clamberStartTime = Time.time;
             clamberRefresh = Time.time + 100;
-        }
+        } //If there is an object to autoClamber, the player is in the air, can initialize the clamber, not currently clambering, is not interacting with a high object then initialize clamber
         else if(autoClamberObj && !canJump && canInitClamber && !clambering && !clamberObj && !autoClamberObj2)
         {
             autoClambering = true;
             canInitClamber = false;
-            autoClamberRefresh = Time.time + autoClamberTime;
             transform.position = transform.position + new Vector3(0, autoClamberOffset, 0);
             rb.AddForce(transform.forward * clamberCrestSpeed);
+            autoClamberRefresh = Time.time + autoClamberTime;
+
         }
 
+        //refresh the ability to auto clamber after set time
         if(autoClamberRefresh <= Time.time)
         {
             canInitClamber = true;
@@ -319,6 +324,7 @@ public class FPSPlayerController : MonoBehaviour
                 if (autoClambering)
                 {
                     
+                    //autoClambering = false;
                 }
 
                 if (clambering && Input.GetKey(KeyCode.Space))
@@ -329,7 +335,7 @@ public class FPSPlayerController : MonoBehaviour
                     rb.velocity = (transform.forward * clamberForwardSpeed) + (transform.up * curClamberSpeed);
 
 
-                    if(curClamberSpeed <= 1.0F || clamberObj == false)
+                    if(curClamberSpeed <= 1.0F || !clamberObj)
                     {
                         clambering = false;
 
@@ -337,7 +343,9 @@ public class FPSPlayerController : MonoBehaviour
 
                         if (!clamberObj)
                         {
-                            rb.AddForce(transform.forward * clamberCrestSpeed);
+                            // rb.AddForce(transform.forward * clamberCrestSpeed);
+                            transform.position = transform.position + (transform.forward * 1.5f) + (transform.up * 1f);
+                            rb.velocity = Vector3.ClampMagnitude((forwardMove + strafingMove) * moveSpeed, moveSpeed) + jumpVect;
 
                         }
                     }
