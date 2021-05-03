@@ -18,7 +18,10 @@ public class ProjectileScript : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        Destroy(gameObject);
+
+         Destroy(gameObject);
+
+        
     }
 
     IEnumerator destroyAfterTime(float time)

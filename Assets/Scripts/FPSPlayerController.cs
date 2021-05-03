@@ -13,6 +13,9 @@ public class FPSPlayerController : MonoBehaviour
 
     public float defaultPlayerScale = 1.5f;
 
+    //misc vars
+    public bool disabled = false;
+
     //vars for movement
     private Rigidbody rb;
     public float groundMoveSpeed = 10f;
@@ -254,159 +257,166 @@ public class FPSPlayerController : MonoBehaviour
         Vector3 forwardMove = transform.forward * Input.GetAxis("Vertical");
         Vector3 strafingMove = transform.right * Input.GetAxis("Horizontal");
 
-
-        //determine if in the air or not
-        if (canJump == true)
+        if (!disabled)
         {
-
-            //set move speed based on whether crouching or moving normally
-            if(crouching == true)
+            //determine if in the air or not
+            if (canJump == true)
             {
-                moveSpeed = crouchMoveSpeed;
-            }
-            else
-            {
-                moveSpeed = groundMoveSpeed;
-            }
 
-            //check if the player is sliding
-            if(sliding == true)
-            {
-                //if the player just started sliding try to boost them
-                if(slideNow == true && Time.time > nextBoost)
+                //set move speed based on whether crouching or moving normally
+                if (crouching == true)
                 {
-                   //If the player is moving forward any amount boost them.
-                    if (transform.InverseTransformDirection(rb.velocity).z > 0)
-                    {
-                        rb.velocity += (transform.forward * slideBoost);
-                    }
-                    //either way dont do this check again till the boost cooldown is expired.
-                    slideNow = false;
-                    nextBoost = Time.time + 3;
-
-                }
-
-                //if the player is set to jump now add velocity then set jumpnow to false
-                if(jumpNow == true)
-                {
-                    rb.velocity += jumpVect;
-                    jumpNow = false;
-                }
-
-                //if the player slows down too much while sliding transition them to crouching and set the boost cooldown
-                if(rb.velocity.magnitude <= crouchThreshhold)
-                {
-                    sliding = false;
-                    nextBoost = Time.time + slideCooldown;
-                }
-            }
-            else
-            {
-                //if the player is either standing normally or crouching without sliding use this code to calculate movement vectors and jumping
-                if (jumpNow == true)
-                {
-                    rb.velocity = Vector3.ClampMagnitude((forwardMove + strafingMove) * moveSpeed, moveSpeed) + jumpVect;
-                    jumpNow = false;
+                    moveSpeed = crouchMoveSpeed;
                 }
                 else
                 {
-                    rb.velocity = Vector3.ClampMagnitude((forwardMove + strafingMove) * moveSpeed, moveSpeed) + yVelFix;
+                    moveSpeed = groundMoveSpeed;
                 }
-            }
-            
 
-        }   //Things to while in the air
-        else
-        {
-            //First check for either type of clambering. If clambering can't wallrun.
-            if (autoClambering || clambering)
+                //check if the player is sliding
+                if (sliding == true)
+                {
+                    //if the player just started sliding try to boost them
+                    if (slideNow == true && Time.time > nextBoost)
+                    {
+                        //If the player is moving forward any amount boost them.
+                        if (transform.InverseTransformDirection(rb.velocity).z > 0)
+                        {
+                            rb.velocity += (transform.forward * slideBoost);
+                        }
+                        //either way dont do this check again till the boost cooldown is expired.
+                        slideNow = false;
+                        nextBoost = Time.time + 3;
+
+                    }
+
+                    //if the player is set to jump now add velocity then set jumpnow to false
+                    if (jumpNow == true)
+                    {
+                        rb.velocity += jumpVect;
+                        jumpNow = false;
+                    }
+
+                    //if the player slows down too much while sliding transition them to crouching and set the boost cooldown
+                    if (rb.velocity.magnitude <= crouchThreshhold)
+                    {
+                        sliding = false;
+                        nextBoost = Time.time + slideCooldown;
+                    }
+                }
+                else
+                {
+                    //if the player is either standing normally or crouching without sliding use this code to calculate movement vectors and jumping
+                    if (jumpNow == true)
+                    {
+                        rb.velocity = Vector3.ClampMagnitude((forwardMove + strafingMove) * moveSpeed, moveSpeed) + jumpVect;
+                        jumpNow = false;
+                    }
+                    else
+                    {
+                        rb.velocity = Vector3.ClampMagnitude((forwardMove + strafingMove) * moveSpeed, moveSpeed) + yVelFix;
+                    }
+                }
+
+
+            }   //Things to while in the air
+            else
             {
-                if (autoClambering)
+                //First check for either type of clambering. If clambering can't wallrun.
+                if (autoClambering || clambering)
                 {
-                    
-                    //autoClambering = false;
-                }
+                    if (autoClambering)
+                    {
 
-                if (clambering && Input.GetKey(KeyCode.Space))
-                {
-                    float curClamberSpeed = clamberSpeed * Mathf.Cos(clamberTimeMod * (Time.time - clamberStartTime));
+                        //autoClambering = false;
+                    }
+
+                    if (clambering && Input.GetKey(KeyCode.Space))
+                    {
+                        float curClamberSpeed = clamberSpeed * Mathf.Cos(clamberTimeMod * (Time.time - clamberStartTime));
 
 
-                    rb.velocity = (transform.forward * clamberForwardSpeed) + (transform.up * curClamberSpeed);
+                        rb.velocity = (transform.forward * clamberForwardSpeed) + (transform.up * curClamberSpeed);
 
 
-                    if(curClamberSpeed <= 1.0F || !clamberObj)
+                        if (curClamberSpeed <= 1.0F || !clamberObj)
+                        {
+                            clambering = false;
+
+                            clamberRefresh = Time.time + clamberTime;
+
+                            if (!clamberObj)
+                            {
+                                // rb.AddForce(transform.forward * clamberCrestSpeed);
+                                transform.position = transform.position + (transform.forward * 1.5f) + (transform.up * 1f);
+                                rb.velocity = Vector3.ClampMagnitude((forwardMove + strafingMove) * moveSpeed, moveSpeed) + jumpVect;
+
+                            }
+                        }
+                    }
+                    else
                     {
                         clambering = false;
 
                         clamberRefresh = Time.time + clamberTime;
-
-                        if (!clamberObj)
-                        {
-                            // rb.AddForce(transform.forward * clamberCrestSpeed);
-                            transform.position = transform.position + (transform.forward * 1.5f) + (transform.up * 1f);
-                            rb.velocity = Vector3.ClampMagnitude((forwardMove + strafingMove) * moveSpeed, moveSpeed) + jumpVect;
-
-                        }
                     }
                 }
                 else
                 {
-                    clambering = false;
-
-                    clamberRefresh = Time.time + clamberTime;
-                }
-            }
-            else
-            {
-                if (isWallRunning)
-                {
-                    rb.useGravity = false;
-                    //wallrunning code will probably go here as wallrunning requires being in the air.
-
-
-                    if (isWallRight)
+                    if (isWallRunning)
                     {
-                        rb.velocity = (transform.forward * wallMoveSpeed) + (transform.right * wallStickForce) + yVelFix + (-transform.up * wallDownForce);
-                        if (jumpNow == true)
+                        rb.useGravity = false;
+                        //wallrunning code will probably go here as wallrunning requires being in the air.
+
+
+                        if (isWallRight)
                         {
-                            rb.AddForce((transform.up + -transform.right) * jumpOffForce);
-                            jumpNow = false;
-                            enableWallRun = false;
+                            rb.velocity = (transform.forward * wallMoveSpeed) + (transform.right * wallStickForce) + yVelFix + (-transform.up * wallDownForce);
+                            if (jumpNow == true)
+                            {
+                                rb.AddForce((transform.up + -transform.right) * jumpOffForce);
+                                jumpNow = false;
+                                enableWallRun = false;
+                            }
+
+                        }
+
+                        if (isWallLeft)
+                        {
+                            rb.velocity = (transform.forward * wallMoveSpeed) + (-transform.right * wallStickForce) + yVelFix + (-transform.up * wallDownForce);
+
+                            if (jumpNow == true)
+                            {
+                                rb.AddForce((transform.up + transform.right) * jumpOffForce);
+                                jumpNow = false;
+                                enableWallRun = false;
+                            }
                         }
 
                     }
-
-                    if (isWallLeft)
+                    else
                     {
-                        rb.velocity = (transform.forward * wallMoveSpeed) + (-transform.right * wallStickForce) + yVelFix + (-transform.up * wallDownForce);
-
-                        if (jumpNow == true)
+                        rb.useGravity = true;
+                        //if in the air and not wallrunning add velocity and clamp the vector to a maximum value
+                        if (rb.velocity.magnitude < maxSpeed)
                         {
-                            rb.AddForce((transform.up + transform.right) * jumpOffForce);
-                            jumpNow = false;
-                            enableWallRun = false;
+                            rb.AddForce(forwardMove * airMoveSpeed);
                         }
+                        rb.AddForce(strafingMove * airMoveSpeed);
                     }
+                }
 
-                }
-                else
-                {
-                    rb.useGravity = true;
-                    //if in the air and not wallrunning add velocity and clamp the vector to a maximum value
-                    if (rb.velocity.magnitude < maxSpeed)
-                    {
-                        rb.AddForce(forwardMove * airMoveSpeed);
-                    }
-                    rb.AddForce(strafingMove * airMoveSpeed);
-                }
+
+
+
+
             }
-            
-            
-
-
-
         }
+        else
+        {
+            rb.velocity = Vector3.zero;
+        }
+        
 
     }
 }

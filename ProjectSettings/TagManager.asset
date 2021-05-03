@@ -5,6 +5,17 @@ TagManager:
   serializedVersion: 2
   tags:
   - GameManager
+  - Target
+  - Bullet
+  - TimeDisplay
+  - SpeedDisplay
+  - MainPanel
+  - EndOfLevel
+  - ExitToMenu
+  - FinalTimeDisplay
+  - com1Time
+  - com2Time
+  - com3Time
   layers:
   - Default
   - TransparentFX
@@ -12,8 +23,8 @@ TagManager:
   - 
   - Water
   - UI
-  - 
-  - 
+  - Projectiles
+  - Checkpoints
   - PostProcessing
   - 
   - 

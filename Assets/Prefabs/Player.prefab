@@ -147,8 +147,8 @@ MonoBehaviour:
   autoClamberTime: 0.5
   autoSquishFactor: 0.5
   clamberTimeMod: 1
-  clamberSpeed: 40
-  clamberForwardSpeed: 25
+  clamberSpeed: 20
+  clamberForwardSpeed: 10
   clamberCrestSpeed: 1000
   clamberDetectionRange: 0.8
   autoClamberDetectionRange: 1.3
